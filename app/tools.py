@@ -7,15 +7,15 @@ def get_tasks():
     cur.execute("SELECT id, title, status FROM tasks WHERE status='pending'")
     result = cur.fetchall()
     conn.close()
-    return result
+    return [dict(row) for row in result]
 
 
 def create_task(payload):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO tasks (user_id, title, status) VALUES (1, %s, 'pending')",
-        (payload["title"],)
+        "INSERT INTO tasks (user_id, title, status) VALUES (?, ?, ?)",
+        (1,payload["title"],'pending')
     )
     conn.commit()
     conn.close()
@@ -29,15 +29,15 @@ def get_events():
     cur.execute("SELECT id, title, datetime FROM events")
     result = cur.fetchall()
     conn.close()
-    return result
+    return [dict(row) for row in result]
 
 
 def create_event(payload):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO events (user_id, title, datetime) VALUES (1, %s, %s)",
-        (payload["title"], payload["datetime"])
+        "INSERT INTO events (user_id, title, datetime) VALUES (?, ?, ?)",
+        (1,payload["title"], payload["datetime"])
     )
     conn.commit()
     conn.close()
@@ -49,8 +49,8 @@ def create_note(payload):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO notes (user_id, content) VALUES (1, %s)",
-        (payload["content"],)
+        "INSERT INTO notes (user_id, content) VALUES (?,?)",
+        (1,payload["content"])
     )
     conn.commit()
     conn.close()

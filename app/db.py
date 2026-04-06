@@ -1,10 +1,8 @@
-import psycopg2
-from app.config import *
+import sqlite3
+
+DB_FILE = "agent.db"
 
 def get_db_connection():
-    return psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS,
-        host=f"/cloudsql/{INSTANCE_CONNECTION_NAME}"
-    )
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row  # makes output nicer
+    return conn
