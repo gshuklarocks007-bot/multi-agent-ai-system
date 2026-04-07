@@ -47,15 +47,42 @@ def update_preference(key, value):
 
 # PRIMARY AGENT (SIMPLIFIED)
 def primary_agent(user_input):
-    if "task" in user_input:
-        return {"actions": [{"tool": "task.get"}]}
-    if "meeting" in user_input:
+    user_input = user_input.lower()
+
+    # ❌ DELETE (blocked / unsupported)
+    if "delete" in user_input:
         return {
             "actions": [
-                {"tool": "calendar.create", "input": {"title": "Meeting", "datetime": "2026-04-07 17:00"}},
-                {"tool": "notes.create", "input": {"content": "Meeting scheduled"}}
+                {
+                    "tool": "calendar.delete"
+                }
             ]
         }
+
+    # ✅ SHOW TASKS
+    if "task" in user_input:
+        return {"actions": [{"tool": "task.get"}]}
+
+    # ✅ CREATE MEETING
+    if "schedule" in user_input or "create meeting" in user_input:
+        return {
+            "actions": [
+                {
+                    "tool": "calendar.create",
+                    "input": {
+                        "title": "Meeting",
+                        "datetime": "2026-04-07 17:00"
+                    }
+                },
+                {
+                    "tool": "notes.create",
+                    "input": {
+                        "content": "Meeting scheduled"
+                    }
+                }
+            ]
+        }
+
     return {"actions": []}
 
 # EXECUTOR
